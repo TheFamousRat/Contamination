@@ -1,0 +1,3 @@
+- Les agents sont crées par des smart pointers (RAII)
+- Prise en compte des rebonds avec oneDMove
+- Indicateur d'initialisation de la zone
