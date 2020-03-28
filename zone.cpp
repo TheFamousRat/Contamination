@@ -62,7 +62,9 @@ void Zone::step(bool show)
         for (auto it = agents.begin() ; it != agents.end() ; it++)
         {
             (*it)->afficher();
-        }
+			std::cout << ',';
+		}
+		std::cout << '\n';
     }
 }
 

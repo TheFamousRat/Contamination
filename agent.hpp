@@ -20,7 +20,7 @@ class Agent {
         Zone* zone;
     public:
         Agent(Zone* zone_, double x_, double y_, double vx_, double vy_);
-
+		
         double distance(const Agent& ag);
         void afficher();
         void move();
