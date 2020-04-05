@@ -2,6 +2,10 @@
 #include "agent.hpp"
 #include "zone.hpp"
 
+//On initialise les générateurs de probabilités d'infection
+std::default_random_engine Agent::generator = std::default_random_engine(time(NULL));
+std::uniform_real_distribution<double> Agent::probaContamination = std::uniform_real_distribution<double>(0.0,1.0);
+
 Agent::Agent(Zone* zone_, double x_, double y_, double vx_, double vy_)
 {
     zone = zone_;
@@ -49,9 +53,36 @@ void oneDMove(double& pos, double& vel, double maxLength)
     }
 }
 
-void Agent::infect_neighbourhood()
+unsigned int Agent::infect_neighbourhood()
 {
+    //Nombre de nouveaux infectés après l'execution de cette fonction
+    unsigned int nvInfectes = 0;
 
+    if (isInfected())
+    {
+        std::vector<Chunk*> chunkSensibles = zone->chunksSensibles(this);
+        for (auto itChunks = chunkSensibles.begin() ; itChunks != chunkSensibles.end() ; itChunks++)
+        {
+            Chunk* chunk = *itChunks;
+            //std::cout << chunk->getX() << ';' << chunk->getY() <<  ',' << chunk->nombreAgents() <<'\n';
+            for (int i(0) ; i < chunk->agentsChunk().size() ; i++)
+            {
+                Agent* ag = chunk->agentsChunk()[i];
+                //On n'itère que sur les agents sains
+                if (!ag->isInfected())
+                {
+                    if (distance(*ag) <= zone->_config.contaminationDistance
+                        && Agent::probaContamination(Agent::generator) <= zone->_config.probaContamination)
+                    {
+                        nvInfectes += 1;
+                        ag->infecter(true);
+                    }
+                }
+            }
+        }
+    }
+
+    return nvInfectes;
 }
 
 bool Agent::isInfected()

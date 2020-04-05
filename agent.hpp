@@ -3,6 +3,8 @@
 
 #include <cmath>
 #include <memory>
+#include <random>
+#include <ctime>
 
 class Zone;
 
@@ -18,15 +20,20 @@ class Agent {
         bool infected;
         //Zone actuelle
         Zone* zone;
+        //Générateurs de probabilité d'infection
+        static std::default_random_engine generator;
+        static std::uniform_real_distribution<double> probaContamination;
     public:
         Agent(Zone* zone_, double x_, double y_, double vx_, double vy_);
 		
         double distance(const Agent& ag);
         void afficher();
         void move();
-        void infect_neighbourhood();
+        unsigned int infect_neighbourhood();
         bool isInfected();
         void infecter(bool infec);
+        double getX() {return x;};
+        double getY() {return y;};
 };
 
 void oneDMove(double& pos, double& vel, double maxLength);

@@ -1,3 +1,12 @@
+Faits
 - Les agents sont crées par des smart pointers (RAII)
 - Prise en compte des rebonds avec oneDMove
 - Indicateur d'initialisation de la zone
+- infect_neighbourhood donne nombre d'infectés
+- infect_neighbourhood uniquement sur agents sains (gagne du temps, évite de prendre l'agent considéré)
+- Agent est une friend class
+- Contamination aléatoire
+
+A faire
+- Identifiants pour les agents
+- Créer grille
