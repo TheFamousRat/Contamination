@@ -54,10 +54,13 @@ void Zone::init()
 
 void Zone::creerChunks()
 {
-    if (_config.tailleTroncons <= _config.contaminationDistance / M_SQRT2)
-        std::cerr << "Erreur : Résolution trop fine prise pour les tronçons." << 
+    if (_config.tailleTroncons <= _config.contaminationDistance / M_SQRT2 
+        && _config.tailleTroncons != 0.0)
+        {
+            std::cerr << "Erreur : Résolution trop fine prise pour les tronçons." << 
                     "Correction à une résolution suffisante (" 
                     << _config.contaminationDistance / M_SQRT2 << ")\n"; 
+        }
     
     tailleChunk = std::max(_config.contaminationDistance / M_SQRT2, _config.tailleTroncons);
 
@@ -109,7 +112,7 @@ void Zone::step(bool show)
     {
         nbInfected += (*it)->infect_neighbourhood();
     }
-    
+
     if (show)
     {
         std::cout << "============================\n";
@@ -125,14 +128,33 @@ void Zone::step(bool show)
     }
 }
 
-void Zone::run(bool show)
+void Zone::run(unsigned int stepNumber, bool show, bool logToFile)
 {
     if (!zoneInit) init();
 
-    for (nbStep = 0; nbStep < _config.dureeMaxSimulation ; nbStep++)
+    stepNumber = std::min(stepNumber,_config.dureeMaxSimulation);
+
+    //On crée le fichier de log
+    std::ofstream o;
+    std::ostringstream nomFichier;
+    nomFichier << "log_" 
+                << _config.nbAgents << "ag_" 
+                << stepNumber << "stps_"
+                << width << "x" << height << ".csv";
+    if (logToFile)
+        o.open(nomFichier.str(), std::ios_base::ate);
+
+    for (nbStep = 0; nbStep < stepNumber ; nbStep++)
     {
         step(show);
+        if (logToFile)
+            o << nbInfected << '\n';
+
+        std::cout << '\r' << double(nbStep)/double(stepNumber) * 100.0;
     }
+    std::cout << '\n';
+
+    o.close();
 }
 
 void Zone::clean()

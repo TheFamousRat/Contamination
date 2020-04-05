@@ -7,6 +7,8 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include <fstream>
+#include <sstream>
 
 class Chunk {
     //Un chunk est une zone carrée contenant les agents d'une partie de la zone
@@ -49,7 +51,7 @@ class Zone {
 
         void init();
         void step(bool show);
-        void run(bool show);
+        void run(unsigned int stepNumber, bool show, bool logToFile);
         void clean();
 
         //Crée la mappage de la zone en tronçons

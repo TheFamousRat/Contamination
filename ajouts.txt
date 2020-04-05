@@ -6,7 +6,7 @@ Faits
 - infect_neighbourhood uniquement sur agents sains (gagne du temps, évite de prendre l'agent considéré)
 - Agent est une friend class
 - Contamination aléatoire
+- Créer grille
 
 A faire
 - Identifiants pour les agents
-- Créer grille
