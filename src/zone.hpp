@@ -16,12 +16,23 @@ class Chunk {
         std::vector<Agent*> _agents;
         int x;
         int y;
+        unsigned long nbMalades;
     public:
         Chunk(int x_, int y_) {x = x_; y = y_;};
         ~Chunk() {};
 
         std::vector<Agent*> agentsChunk() {return _agents;};
-        void ajouterAgent(Agent* ag) {_agents.push_back(ag);};
+        bool chunkEntierMalade() {return (nbMalades == _agents.size());};
+        void ajouterAgent(Agent* ag) {
+            _agents.push_back(ag);
+            if (ag->isInfected())
+                nbMalades += 1;
+        };
+        void sortirAgent(Agent *ag) {
+            _agents.erase(std::find(_agents.begin(), _agents.end(), ag));
+            if (ag->isInfected())
+                nbMalades -= 1;
+        };
         void viderChunk() {_agents.clear();};
         unsigned long nombreAgents() {return _agents.size();};
 

@@ -14,7 +14,7 @@ class Config {
         unsigned int dureeMaxSimulation = 10000;
         
         Zone* currentZone;
-        float probaContamination = 0.001;
+        float probaContamination = 0.003;
         /*Résolution du mappage de la zone. Doit être supérieur à sqrt(contaminationDistance)
         L'initialiser à 0 donne le choix de la taille à l'ordinateur. Les performances
         seront meilleures, mais la taille changée manuellement peut correspondre à certains modèles*/

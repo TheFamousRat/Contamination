@@ -44,12 +44,13 @@ void Zone::init()
             ));    
     }
 
+    creerChunks();
+
     //On contamine le bon nombre de patients
     for (int i(0) ; i < nbInfected ; i++) agents[i]->infecter(true);
     std::random_shuffle(agents.begin(), agents.end());
 
     zoneInit = true;
-    creerChunks();
 }
 
 void Zone::creerChunks()
@@ -103,10 +104,11 @@ void Zone::step(bool show)
     //On bouge d'abord tous les agents
     for (auto it = agents.begin() ; it != agents.end() ; it++)
     {
-        (*it)->move();
+        Agent* ag = it->get();
+        chunkAgent(ag)->sortirAgent(ag);
+        ag->move();
+        chunkAgent(ag)->ajouterAgent(ag);
     }
-    //On remappe correctement les agents
-    assignerAgentsChunks();
     //Une fois tous les agents bougés on lance le processus d'infection
     for (auto it = agents.begin() ; it != agents.end() ; it++)
     {
@@ -144,13 +146,20 @@ void Zone::run(unsigned int stepNumber, bool show, bool logToFile)
     if (logToFile)
         o.open(nomFichier.str(), std::ios_base::ate);
 
+    unsigned short barSize = 30;
+    unsigned short nbStepsRefresh = 5;
+
     for (nbStep = 0; nbStep < stepNumber ; nbStep++)
     {
         step(show);
         if (logToFile)
             o << nbInfected << '\n';
 
-        std::cout << '\r' << double(nbStep)/double(stepNumber) * 100.0;
+        if (!(nbStep % nbStepsRefresh))
+        {
+            unsigned short newBarFilling = (barSize * nbStep)/(stepNumber);
+            std::cout << '\r' << "[Avancement]|" << std::string(newBarFilling, '=') << std::string(barSize - newBarFilling - 1, '-') << '|' << 100.0*double(nbStep)/double(stepNumber) << '%';
+        }
     }
     std::cout << '\n';
 

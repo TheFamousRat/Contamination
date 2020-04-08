@@ -64,18 +64,20 @@ unsigned int Agent::infect_neighbourhood()
         for (auto itChunks = chunkSensibles.begin() ; itChunks != chunkSensibles.end() ; itChunks++)
         {
             Chunk* chunk = *itChunks;
-            //std::cout << chunk->getX() << ';' << chunk->getY() <<  ',' << chunk->nombreAgents() <<'\n';
-            for (int i(0) ; i < chunk->agentsChunk().size() ; i++)
+            if (!chunk->chunkEntierMalade())
             {
-                Agent* ag = chunk->agentsChunk()[i];
-                //On n'itère que sur les agents sains
-                if (!ag->isInfected())
+                for (int i(0) ; i < chunk->agentsChunk().size() ; i++)
                 {
-                    if (distance(*ag) <= zone->_config.contaminationDistance
-                        && Agent::probaContamination(Agent::generator) <= zone->_config.probaContamination)
+                    Agent* ag = chunk->agentsChunk()[i];
+                    //On n'itère que sur les agents sains
+                    if (!ag->isInfected())
                     {
-                        nvInfectes += 1;
-                        ag->infecter(true);
+                        if (distance(*ag) <= zone->_config.contaminationDistance
+                            && Agent::probaContamination(Agent::generator) <= zone->_config.probaContamination)
+                        {
+                            nvInfectes += 1;
+                            ag->infecter(true);
+                        }
                     }
                 }
             }
@@ -92,5 +94,8 @@ bool Agent::isInfected()
 
 void Agent::infecter(bool infec)
 {
+    Chunk* chunk = zone->chunkAgent(this);
+    chunk->sortirAgent(this);
     infected = infec;
+    chunk->ajouterAgent(this);
 }
